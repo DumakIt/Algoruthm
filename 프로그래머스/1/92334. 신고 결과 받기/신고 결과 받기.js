@@ -1,31 +1,15 @@
 function solution(id_list, report, k) {
-  const answer = new Array(id_list.length).fill(0);
-  const reporter = {};
-  const count = {};
-
-  id_list.forEach((el) => {
-    reporter[el] = new Set();
-    count[el] = 0;
-  });
-
-  report.forEach((el) => {
-    const splitEl = el.split(" ");
-
-    if (!reporter[splitEl[0]].has(splitEl[1])) {
-      reporter[splitEl[0]].add(splitEl[1]);
-      count[splitEl[1]] += 1;
+    let reports = [...new Set(report)].map(a=>{return a.split(' ')});
+    let counts = new Map();
+    for (const bad of reports){
+        counts.set(bad[1],counts.get(bad[1])+1||1)
     }
-  });
-
-  id_list.forEach((el1) => {
-    if (count[el1] >= k) {
-      id_list.forEach((el2, idx2) => {
-        if (reporter[el2].has(el1)) {
-          answer[idx2] += 1;
+    let good = new Map();
+    for(const report of reports){
+        if(counts.get(report[1])>=k){
+            good.set(report[0],good.get(report[0])+1||1)
         }
-      });
     }
-  });
-
-  return answer;
+    let answer = id_list.map(a=>good.get(a)||0)
+    return answer;
 }
